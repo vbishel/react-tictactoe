@@ -4,12 +4,13 @@ import "./index.css";
 import {
   BrowserRouter,
   Routes,
-  Route,
-  Link,
-  redirect,
+  Route
 } from "react-router-dom";
 import HomePage from "./components/pages/HomePage";
 import SingleplayerPage from "./components/pages/SingleplayerPage";
+import CreateRoomPage from "./components/pages/CreateRoomPage";
+import JoinRoomPage from "./components/pages/JoinRoomPage";
+
 
 class App extends React.Component {
 
@@ -33,6 +34,14 @@ class App extends React.Component {
             <Route
             path="/singleplayer"
             element={<SingleplayerPage />}
+            />
+            <Route
+            path="/createRoom"
+            element={<CreateRoomPage />}
+            />
+            <Route
+            path="/joinRoom"
+            element={<JoinRoomPage />}
             />
           </Routes>
         </BrowserRouter>

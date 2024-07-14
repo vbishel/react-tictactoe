@@ -14,11 +14,11 @@ class HomePage extends React.Component {
 
   render() {
     return (
-      < >
+      <>
         <Header>Tic Tac Toe</Header>
-        <ButtonMain onClick={this.handleSingleplayerClick}>PLAY VS BOT</ButtonMain>
-        <ButtonMain onClick={this.handleMultiplayerClick}>JOIN ROOM</ButtonMain>
-        <ButtonMain onClick={this.handleMultiplayerClick}>HOST ROOM</ButtonMain>
+        <ButtonMain>PLAY VS BOT</ButtonMain>
+        <ButtonMain>JOIN ROOM</ButtonMain>
+        <ButtonMain>HOST ROOM</ButtonMain>
       </>
     )
   }

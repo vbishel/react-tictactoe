@@ -4,5 +4,6 @@ from .views import index
 app_name = "frontend"
 
 urlpatterns = [
-    path("", index, name = "index")
+    path("", index),
+    path("singleplayer", index)
 ]
