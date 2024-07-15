@@ -3,6 +3,7 @@ import { Location, useLocation, Link } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
 import { useEffect, useState } from "react";
 import ButtonPrimary from "../components/buttons/ButtonPrimary";
+import { w3cwebsocket } from "websocket";
 
 
 type RoomInfo = {
@@ -37,6 +38,15 @@ export default function RoomPage() {
       });
     })
   }, [])
+
+  useEffect(() => {
+    if (roomFound) {
+      const client = new w3cwebsocket(`ws://127.0.0.1:8000/room/${roomCode}/`)
+      client.onopen = () => {
+        console.log("client connected")
+      }
+    }
+  }, [roomInfo])
 
   function getRoomCodeFromLocation(location: Location<any>) {
     return location.pathname.replace(/[a-z]/g, "").replace(/\/+/g, '');
