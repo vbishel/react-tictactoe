@@ -24,7 +24,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="flex flex-col items-center w-[100vw] h-[100vh] pt-[25vh] bg-background">
+      <div className="flex flex-col items-center w-[100vw] h-[100vh] pt-[25vh] bg-background text-primary">
         <BrowserRouter>
           <Routes>
             <Route
@@ -36,11 +36,11 @@ class App extends React.Component {
             element={<SingleplayerPage />}
             />
             <Route
-            path="/createRoom"
+            path="/create-room"
             element={<CreateRoomPage />}
             />
             <Route
-            path="/joinRoom"
+            path="/join-room"
             element={<JoinRoomPage />}
             />
           </Routes>

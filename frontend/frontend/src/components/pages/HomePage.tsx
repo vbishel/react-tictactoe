@@ -1,5 +1,5 @@
 import React from "react";
-import ButtonMain from "../buttons/ButtonMain";
+import ButtonPrimaryLink from "../buttons/ButtonPrimaryLink";
 import Header from "../Header";
 
 class HomePage extends React.Component {
@@ -16,9 +16,9 @@ class HomePage extends React.Component {
     return (
       <>
         <Header>Tic Tac Toe</Header>
-        <ButtonMain>PLAY VS BOT</ButtonMain>
-        <ButtonMain>JOIN ROOM</ButtonMain>
-        <ButtonMain>HOST ROOM</ButtonMain>
+        <ButtonPrimaryLink href="/singleplayer" className="mb-6">PLAY VS BOT</ButtonPrimaryLink>
+        <ButtonPrimaryLink href="/join-room" className="mb-6">JOIN ROOM</ButtonPrimaryLink>
+        <ButtonPrimaryLink href="/create-room" className="mb-6">CREATE ROOM</ButtonPrimaryLink>
       </>
     )
   }

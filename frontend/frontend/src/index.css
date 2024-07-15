@@ -13,3 +13,17 @@
 * {
   font-family: "Pixeloid Sans";
 }
+
+input {
+  all: unset;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+div {
+  user-select: none;
+}

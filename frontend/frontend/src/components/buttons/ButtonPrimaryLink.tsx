@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
-import ButtonMain, { Props as ButtonMainProps } from "./ButtonMain";
+import ButtonPrimary, { Props as ButtonMainProps } from "./ButtonPrimary";
 
 type Props = ButtonMainProps & { href: string }
 
-export default function ButtonMainLink({ children, onClick, href, className = "", disabled = false }: Props) {
+export default function ButtonPrimaryLink({ children, onClick, href, className = "", disabled = false }: Props) {
   return (
     <Link to={href}>
-      <ButtonMain
+      <ButtonPrimary
       onClick={onClick}
       className={className}
       disabled={disabled}
       >
         { children }
-      </ButtonMain>
+      </ButtonPrimary>
     </Link>
   )
 }
