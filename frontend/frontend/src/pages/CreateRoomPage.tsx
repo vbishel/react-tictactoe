@@ -1,8 +1,9 @@
-import GameGrid from '../components/game/GameGrid';
 import ButtonSecondary from '../components/buttons/ButtonSecondary';
 import ButtonPrimary from '../components/buttons/ButtonPrimary';
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import PageContainer from '../components/PageContainer';
+import ControlledInput from '../components/inputs/ControlledInput';
 
 type State = {
   winsToEnd: string,
@@ -43,7 +44,7 @@ export default function CreateRoomPage() {
 
       return response.json()
     })
-    .then((data) => setState({...state, roomCode: data.code}));
+    .then(data => setState({...state, roomCode: data.code}));
   }
 
   if (state.roomCode) {
@@ -51,47 +52,40 @@ export default function CreateRoomPage() {
   }
 
   return (
-    <>
-      <div className="w-[380px] h-[380px] border-primary border-4 flex flex-col justify-center items-center box-content z-10">
-        <div>wins to end game</div>
-        <div>max - 100</div>
-        <input 
-        className="mt-4 px-4 py-1 w-[140px] box-border bg-primary text-background flex text-center items-center"
-        type="number" 
-        value={state.winsToEnd}
-        onChange={(e) => setState({...state, winsToEnd: e.target.value, inputError: ""})}
-        />
-        { state.inputError ? (
-          <div className="text-red-600 mt-2">
-            { state.inputError }
-          </div>
-        ) : ""}
-        <div className="mt-4">host symbol</div>
-        <div className="w-[140px] mt-4 flex flex-row justify-between">
-          <ButtonSecondary
-          className={`${state.hostSymbol === "X" ? "" : "opacity-30"}`}
-          onClick={() => setState({...state, hostSymbol: "X"})}
-          >
-            X
-          </ButtonSecondary>
-          <ButtonSecondary
-          className={`${state.hostSymbol === "O" ? "" : "opacity-30"}`}
-          onClick={() => setState({...state, hostSymbol: "O"})}
-          >
-            O
-          </ButtonSecondary>
-        </div>
-        <ButtonPrimary
-        className="mt-8 !w-[140px] h-[40px]"
-        onClick={createRoom}
+    <PageContainer>
+      <div>wins to end game</div>
+      <div>max - 100</div>
+      <ControlledInput
+      type="number" 
+      value={state.winsToEnd}
+      inputError={state.inputError}
+      onChange={(e) => setState({...state, winsToEnd: e.target.value, inputError: ""})}
+      maxLength={2}
+      />
+      <div className="mt-4">host symbol</div>
+      <div className="w-[140px] mt-4 flex flex-row justify-between">
+        <ButtonSecondary
+        className={`${state.hostSymbol === "X" ? "" : "opacity-30"}`}
+        onClick={() => setState({...state, hostSymbol: "X"})}
         >
-          CREATE
-        </ButtonPrimary>
-        <Link to="/" className="mt-2 hover:cursor-pointer">
-          BACK
-        </Link>
+          X
+        </ButtonSecondary>
+        <ButtonSecondary
+        className={`${state.hostSymbol === "O" ? "" : "opacity-30"}`}
+        onClick={() => setState({...state, hostSymbol: "O"})}
+        >
+          O
+        </ButtonSecondary>
       </div>
-      <GameGrid disabled={true} className="absolute left-1/2 translate-x-[-50%] translate-y-[2.5px]" />
-    </>
+      <ButtonPrimary
+      className="mt-8 !w-[140px] h-[40px]"
+      onClick={createRoom}
+      >
+        CREATE
+      </ButtonPrimary>
+      <Link to="/" className="mt-2 hover:cursor-pointer">
+        BACK
+      </Link>
+    </PageContainer>
   )
 }

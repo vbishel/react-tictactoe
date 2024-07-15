@@ -1,8 +1,6 @@
-type Props = {
-  disabled?: boolean
-}
 
-export default function Cell({ disabled }: Props) {
+
+export default function Cell() {
   return (
     <div className="border-primary-light border-2">
 

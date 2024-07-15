@@ -21,4 +21,5 @@ class Room(models.Model):
   host = models.CharField(max_length = 50, unique = True)
   host_symbol = models.CharField(max_length = 1, default = "X")
   wins_to_end = models.IntegerField(null = False, default = 1)
-  created_at = models.DateTimeField(auto_now_add=True)
+  created_at = models.DateTimeField(auto_now_add = True)
+  player = models.CharField(max_length = 50, unique = True, default = None, null = True)

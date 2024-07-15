@@ -5,5 +5,8 @@ app_name = "frontend"
 
 urlpatterns = [
     path("", index),
-    path("singleplayer", index)
+    path("singleplayer", index),
+    path("create-room", index),
+    path("room/<str:roomCode>", index),
+    path("join-room", index)
 ]
