@@ -6,10 +6,11 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import HomePage from "./components/pages/HomePage";
-import SingleplayerPage from "./components/pages/SingleplayerPage";
-import CreateRoomPage from "./components/pages/CreateRoomPage";
-import JoinRoomPage from "./components/pages/JoinRoomPage";
+import HomePage from "./pages/HomePage";
+import SingleplayerPage from "./pages/SingleplayerPage";
+import CreateRoomPage from "./pages/CreateRoomPage";
+import JoinRoomPage from "./pages/JoinRoomPage";
+import RoomPage from "./pages/RoomPage";
 
 
 class App extends React.Component {
@@ -42,6 +43,10 @@ class App extends React.Component {
             <Route
             path="/join-room"
             element={<JoinRoomPage />}
+            />
+            <Route
+            path="/room/:roomCode"
+            element={<RoomPage />}
             />
           </Routes>
         </BrowserRouter>

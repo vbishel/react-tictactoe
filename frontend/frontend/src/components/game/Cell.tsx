@@ -1,20 +1,11 @@
-import React from "react";
-
-
 type Props = {
   disabled?: boolean
 }
 
-export default class Cell extends React.Component<Props> {
+export default function Cell({ disabled }: Props) {
+  return (
+    <div className="border-primary-light border-2">
 
-
-  render() {
-    const disabled = this.props.disabled || false;
-
-    return (
-      <div className="border-primary-light border-2">
-
-      </div>
-    )
-  }
+    </div>
+  )
 }

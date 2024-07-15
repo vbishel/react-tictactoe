@@ -1,16 +1,8 @@
 import React from "react";
-import ButtonPrimaryLink from "../buttons/ButtonPrimaryLink";
-import Header from "../Header";
+import ButtonPrimaryLink from "../components/buttons/ButtonPrimaryLink";
+import Header from "../components/Header";
 
-class HomePage extends React.Component {
-
-  handleSingleplayerClick() {
-
-  }
-
-  handleMultiplayerClick() {
-
-  }
+export default class HomePage extends React.Component {
 
   render() {
     return (
@@ -23,5 +15,3 @@ class HomePage extends React.Component {
     )
   }
 }
-
-export default HomePage;

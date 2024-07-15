@@ -1,4 +1,4 @@
-export interface GameState {
+export type GameState = {
   currentTurn: "O" | "X";
   O: string[];
   O_score: number;
@@ -6,34 +6,14 @@ export interface GameState {
   X_score: number;
   isGameStarted: boolean;
   isRoundEnded: boolean;
-  hostPlayingWith: "O" | "X"
+  hostPlayingWith: "O" | "X";
   winner: "O" | "X" | null;
   winningCombination: string[] | null;
 }
 
-type Action = {
-  type: string;
-  payload: string;
-};
+export type GameMultiplayerState = GameState & { isHost: boolean }
 
-type Context = {
-  state: GameState;
-  dispatch: Function;
-};
-
-
-const winningCombinations = [
-  ["1", "2", "3"],
-  ["4", "5", "6"],
-  ["7", "8", "9"],
-  ["1", "4", "7"],
-  ["2", "5", "8"],
-  ["3", "6", "9"],
-  ["1", "5", "9"],
-  ["3", "5", "7"],
-];
-
-var initialState: GameState = {
+export const initialState: GameState = {
   currentTurn: "X",
   O: [],
   O_score: 0,
