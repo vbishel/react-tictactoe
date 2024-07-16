@@ -44,11 +44,7 @@ export default function CreateRoomPage() {
 
       return response.json()
     })
-    .then(data => setState({...state, roomCode: data.code}));
-  }
-
-  if (state.roomCode) {
-    navigate(`/room/${state.roomCode}`);
+    .then(data => navigate(`/room/${data.code}`));
   }
 
   return (

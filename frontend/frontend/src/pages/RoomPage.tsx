@@ -7,17 +7,19 @@ import { w3cwebsocket } from "websocket";
 
 
 type RoomInfo = {
+  host: string,
   isHost: boolean,
   winsToEnd: number,
   hostSymbol: "O" | "X",
-  player: string,
 }
 
+var socket: w3cwebsocket;
 export default function RoomPage() {
   const location = useLocation();
   const roomCode = getRoomCodeFromLocation(location);
   const [roomInfo, setRoomInfo] = useState<RoomInfo | undefined>(undefined);
   const [roomFound, setRoomFound] = useState<boolean | undefined>(undefined);
+  const [player, setPlayer] = useState("")
 
   useEffect(() => {
     fetch(`/api/get-room?code=${roomCode}`)
@@ -27,23 +29,29 @@ export default function RoomPage() {
         return;
       }
       setRoomFound(true);
-      return response.json()
+      return response.json();
     })
     .then(data => {
       setRoomInfo({
+        host: data.host,
         isHost: data.is_host,
         winsToEnd: data.wins_to_end,
         hostSymbol: data.host_symbol,
-        player: data.player
       });
     })
   }, [])
 
   useEffect(() => {
-    if (roomFound) {
-      const client = new w3cwebsocket(`ws://127.0.0.1:8000/room/${roomCode}/`)
-      client.onopen = () => {
+    if (roomInfo) {
+      socket = new w3cwebsocket(`ws://127.0.0.1:8000/room/${roomCode}`)
+      socket.onopen = () => {
         console.log("client connected")
+      }
+      socket.onmessage = (message) => {
+        const dataFromServer = JSON.parse(message.data as string)
+        if (dataFromServer.type === 'player_join' && dataFromServer.session_id !== roomInfo?.host) {
+          setPlayer(dataFromServer.session_id)
+        }
       }
     }
   }, [roomInfo])
@@ -76,12 +84,14 @@ export default function RoomPage() {
         host symbol: {roomInfo.hostSymbol}
       </div>
       <div>
-        player: {roomInfo.player ? "connected" : "not connected"}
+        player: {player ? "connected" : "not connected"}
       </div>
-      <ButtonPrimary className="mt-4 w-[200px] py-1" disabled={!roomInfo.player}>
+      <ButtonPrimary className="mt-4 w-[200px] py-1" disabled={!(roomInfo.isHost && player)}>
         START
       </ButtonPrimary>
-      <Link to="/" className="mt-4 hover:cursor-pointer">
+      <Link to="/" className="mt-4 hover:cursor-pointer" onClick={() => {
+        
+      }}>
         LEAVE
       </Link>
     </PageContainer>
