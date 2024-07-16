@@ -47,13 +47,35 @@ export default {
           "100%": {
             opacity: "1"
           }
+        },
+        scaleInY: {
+          "0%": {
+            transform: "scaleY(0)",
+            opacity: "0",
+          },
+          "100%": {
+            transform: "scaleY(1)",
+            opacity: "1"
+          }
+        },
+        scaleOutY: {
+          "0%": {
+            transform: "scale(1)",
+            opacity: "1"
+          },
+          "100%": {
+            transform: "scale(0)",
+            opacity: "0"
+          },
         }
       },
       animation: {
         scaleOut: "scaleOut 0.3s ease forwards",
         scaleIn: "scaleIn 0.25s ease forwards",
         fadePartial: "fadePartial 0.25s ease forwards",
-        fadeIn: "fadeIn 0.25s ease forwards"
+        fadeIn: "fadeIn 0.25s ease forwards",
+        scaleInY: "scaleInY 0.3s ease forwards",
+        scaleOutY: "scaleOutY 0.3s ease forwards"
       }
     },
   },

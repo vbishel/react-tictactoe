@@ -25,9 +25,8 @@ export type RoomInfo = {
   hostSymbol: "O" | "X",
 }
 
-export type SingleplayerContext = {
+export type GameContext = {
   state: GameState,
   dispatch: Function,
+  roomInfo: RoomInfo
 }
-
-export type MultiplayerContext = SingleplayerContext & { roomInfo: RoomInfo }

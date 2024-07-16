@@ -1,4 +1,4 @@
-import { MultiContext } from "../../contexts";
+import { TictactoeContext } from "../../contexts";
 import { useContext } from "react";
 
 
@@ -7,8 +7,8 @@ type Props = {
 }
 
 
-export default function MultiplayerCell({ idx }: Props) {
-  const context = useContext(MultiContext)!;
+export default function Cell({ idx }: Props) {
+  const context = useContext(TictactoeContext)!;
   let symbol = "";
   
   if (context.state.O.includes(idx)) {

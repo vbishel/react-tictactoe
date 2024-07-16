@@ -1,10 +1,10 @@
 import { Action, RoomInfo } from "../types";
 import { initialState } from "../constants";
-import { Location, useLocation, useNavigate, Link } from "react-router-dom";
+import { Location, useLocation, Link } from "react-router-dom";
 import RoundEndMenu from "../components/room/RoundEndMenu";
 import PageContainer from "../components/PageContainer";
 import { useEffect, useState, useReducer } from "react";
-import { MultiContext } from "../contexts";
+import { TictactoeContext } from "../contexts";
 import { gameReducer } from "../reducers/gameReducer";
 import ButtonPrimary from "../components/buttons/ButtonPrimary";
 import { w3cwebsocket } from "websocket";
@@ -20,9 +20,8 @@ export default function RoomPage() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
   const [roomInfo, setRoomInfo] = useState<RoomInfo | undefined>(undefined);
   const [roomFound, setRoomFound] = useState<boolean | undefined>(undefined);
-  const [player, setPlayer] = useState("")
-  const [hostDisconnected, setHostDisconnected] = useState(false)
-  const [roomFull, setRoomFull] = useState(false);
+  const [player, setPlayer] = useState("");
+  const [hostDisconnected, setHostDisconnected] = useState(false);
 
   useEffect(() => {
     fetch(`/api/get-room?code=${roomCode}`)
@@ -45,7 +44,7 @@ export default function RoomPage() {
   }, [])
 
   useEffect(() => {
-    if (roomInfo && !roomFull) {
+    if (roomInfo) {
       socket = new w3cwebsocket(`ws://127.0.0.1:8000/room/${roomCode}`)
       socket.onopen = () => {
         console.log("client connected");
@@ -59,11 +58,6 @@ export default function RoomPage() {
             session_id = dataFromServer.data;
 
             if (session_id !== roomInfo.host) {
-              if (player && player !== session_id) {
-                socket.close();
-                setRoomFull(true);
-                return;
-              }
               setPlayer(session_id);
             }
             break;
@@ -98,10 +92,12 @@ export default function RoomPage() {
             }
             prevAction = action;
             dispatch(action);
-            dispatch({
-              type: "check_round_winner",
-              payload: ""
-            })
+            if (action.type === "register_turn") {
+              dispatch({
+                type: "check_round_winner",
+                payload: ""
+              });
+            }
             break;
         }
       }
@@ -138,12 +134,6 @@ export default function RoomPage() {
     )
   }
 
-  if (roomFull) {
-    return (
-      <RoomError text="Room is full"/>
-    )
-  }
-
   if (!roomInfo) {
     return null;
   }
@@ -152,10 +142,10 @@ export default function RoomPage() {
 
   if (state.isGameStarted) {
     return (
-      <MultiContext.Provider value={{state, dispatch: sendAction, roomInfo}}>
+      <TictactoeContext.Provider value={{state, dispatch: sendAction, roomInfo}}>
         { state.isRoundEnded ? <RoundEndMenu /> : null}
         <GameGrid />
-      </MultiContext.Provider>
+      </TictactoeContext.Provider>
     )
   }
   return (

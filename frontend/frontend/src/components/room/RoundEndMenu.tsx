@@ -1,11 +1,11 @@
-import { MultiContext } from "../../contexts";
+import { TictactoeContext } from "../../contexts";
 import { useContext } from "react";
 import ButtonPrimary from "../buttons/ButtonPrimary";
 import ButtonPrimaryLink from "../buttons/ButtonPrimaryLink";
 
 
 export default function RoundEndMenu() {
-  const context = useContext(MultiContext)!;
+  const context = useContext(TictactoeContext)!;
   
   function gameWinner(): "O" | "X" | "-" | null {
     if (context.state.O_score === context.state.X_score
