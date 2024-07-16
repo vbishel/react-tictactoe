@@ -50,7 +50,7 @@ export default function CreateRoomPage() {
   return (
     <PageContainer>
       <div>wins to end game</div>
-      <div>max - 100</div>
+      <div>max - 99</div>
       <ControlledInput
       type="number" 
       value={state.winsToEnd}

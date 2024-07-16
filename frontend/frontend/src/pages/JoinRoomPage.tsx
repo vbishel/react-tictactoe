@@ -45,7 +45,7 @@ export default function JoinRoomPage() {
       maxLength={6}
       />
       <ButtonPrimary
-      className="mt-6 w-[100px] h-[10px]"
+      className="mt-6 w-[80px] h-[10px]"
       onClick={handleRoomJoin}
       >
         JOIN
