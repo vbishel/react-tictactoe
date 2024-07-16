@@ -42,6 +42,7 @@ export default function RoomPage() {
   }, [])
 
   useEffect(() => {
+    // TODO: при отключении хоста сделать так чтобы хостом становился второй игрок
     if (roomInfo) {
       socket = new w3cwebsocket(`ws://127.0.0.1:8000/room/${roomCode}`)
       socket.onopen = () => {

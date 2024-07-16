@@ -31,16 +31,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-  'frontend.apps.FrontendConfig',
-  'rest_framework',
-  'api.apps.ApiConfig',
+  'daphne',
   'channels',
+  'rest_framework',
   'django.contrib.admin',
   'django.contrib.auth',
   'django.contrib.contenttypes',
   'django.contrib.sessions',
   'django.contrib.messages',
   'django.contrib.staticfiles',
+  'frontend.apps.FrontendConfig',
+  'api.apps.ApiConfig',
+  'tictactoe.apps.TictactoeConfig'
 ]
 
 MIDDLEWARE = [
@@ -72,7 +74,7 @@ TEMPLATES = [
   },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 
 # Database
@@ -134,7 +136,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ASGI_APPLICATION = "tictactoe.routing.application"
 
 CHANNEL_LAYERS = {
-  'default': {
-    'BACKEND': "channels.layers.InMemoryChannelLayer"
-  },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
