@@ -1,6 +1,7 @@
 import { Action, GameState, RoomInfo } from "../types";
 import { initialState } from "../constants";
 import { Location, useLocation, Link } from "react-router-dom";
+import RoundEndMenu from "../components/room/RoundEndMenu";
 import PageContainer from "../components/PageContainer";
 import { useEffect, useState, useReducer } from "react";
 import { MultiContext } from "../contexts";
@@ -8,6 +9,8 @@ import { gameReducer } from "../reducers/gameReducer";
 import ButtonPrimary from "../components/buttons/ButtonPrimary";
 import { w3cwebsocket } from "websocket";
 import GameGrid from "../components/game/GameGrid";
+import ButtonPrimaryLink from "../components/buttons/ButtonPrimaryLink";
+import RoomError from "../components/room/RoomError";
 
 
 var socket: w3cwebsocket;
@@ -19,6 +22,8 @@ export default function RoomPage() {
   const [roomInfo, setRoomInfo] = useState<RoomInfo | undefined>(undefined);
   const [roomFound, setRoomFound] = useState<boolean | undefined>(undefined);
   const [player, setPlayer] = useState("")
+  const [hostDisconnected, setHostDisconnected] = useState(false)
+  const [roomFull, setRoomFull] = useState(false);
 
   useEffect(() => {
     fetch(`/api/get-room?code=${roomCode}`)
@@ -43,17 +48,41 @@ export default function RoomPage() {
   useEffect(() => {
     // TODO: при отключении хоста выходить из комнаты
     if (roomInfo) {
+      if (!socket && player) {
+        setRoomFull(true);
+        return;
+      }
       socket = new w3cwebsocket(`ws://127.0.0.1:8000/room/${roomCode}`)
       socket.onopen = () => {
         console.log("client connected");
       }
       socket.onmessage = (message) => {
         const dataFromServer = JSON.parse(message.data as string);
+        console.log(message)
+        let session_id: string;
         switch (dataFromServer.type) {
-          case "player_join":
-            const session_id = dataFromServer.data;
+          case "player_connected":
+            session_id = dataFromServer.data;
+
             if (session_id !== roomInfo.host) {
+              if (player && player !== session_id) {
+                socket.close();
+                setRoomFull(true);
+                return;
+              }
               setPlayer(session_id);
+            }
+            break;
+          
+          case "player_disconnected":
+            session_id = dataFromServer.data;
+            if (session_id === roomInfo.host) {
+              socket.send(JSON.stringify({
+                type: "host_disconnected",
+                data: ""
+              }));
+            } else {
+              setPlayer("");
             }
             break;
 
@@ -83,21 +112,31 @@ export default function RoomPage() {
     sendAction({
       type: "start_game",
       payload: "player"
-    })
+    });
   }
 
   function sendAction(action: Action) {
     socket.send(JSON.stringify({
       type: "action",
       data: action
-    }))
+    }));
   }
 
   if (roomFound === false) {
     return (
-      <PageContainer>
-        Room Not Found
-      </PageContainer>
+      <RoomError text="Room not found" />
+    )
+  }
+
+  if (hostDisconnected) {
+    return (
+      <RoomError text="Host disconnected" />
+    )
+  }
+
+  if (roomFull) {
+    return (
+      <RoomError text="Room is full"/>
     )
   }
 
@@ -110,6 +149,7 @@ export default function RoomPage() {
   if (state.isGameStarted) {
     return (
       <MultiContext.Provider value={{state, dispatch: sendAction, roomInfo}}>
+        { state.isRoundEnded ? <RoundEndMenu /> : null}
         <GameGrid />
       </MultiContext.Provider>
     )
@@ -117,16 +157,19 @@ export default function RoomPage() {
   return (
     <PageContainer className={`${state.isGameStarted ? "hidden" : ""}`}>
       <div className="text-xl">
-        ROOM CODE: {roomCode}
+        ROOM CODE: <span className="text-primary-light">{roomCode}</span>
       </div>
       <div>
-        wins to end: {roomInfo.winsToEnd}
+        wins to end: <span className="text-primary-light">{roomInfo.winsToEnd}</span> 
       </div>
       <div>
-        host symbol: {roomInfo.hostSymbol}
+        host symbol: <span className="text-primary-light">{roomInfo.hostSymbol}</span>
       </div>
       <div>
-        player: {player ? "connected" : "not connected"}
+        player: {" "}
+        <span className={`${player ? "text-primary-light" : "text-primary-dark"}`}>
+          {player ? "connected" : "not connected"}
+        </span>
       </div>
       <ButtonPrimary 
       className="mt-4 w-[200px] py-1" disabled={!(roomInfo.isHost && player)}
@@ -135,7 +178,7 @@ export default function RoomPage() {
         START
       </ButtonPrimary>
       <Link to="/" className="mt-4 hover:cursor-pointer" onClick={() => {
-        
+        socket.close();
       }}>
         LEAVE
       </Link>

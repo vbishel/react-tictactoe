@@ -7,13 +7,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
   console.log("action dispatched")
   switch (action.type) {
     case "register_turn":
-      // Checking who made the turn
       if (state.currentTurn === "X") {
-        // Action payload will have a cell, which is added to a list of player's occupied cells.
         return {
           ...state,
           X: [...state.X, action.payload],
-          // Passing the turn to the second player
           currentTurn: "O",
         };
       } else {
@@ -25,7 +22,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
       }
     case "check_round_winner":
       if (state.isRoundEnded === false) {
-        // Check winner will be called after the turn is passed to second player, but we are checking the player who just made the turn
         let player: "O" | "X";
         if (state.currentTurn === "X") {
           player = "O";
@@ -34,7 +30,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
         }
         const occupiedCells = state[player];
 
-        // Check if player's occupied cells contain winning combination cells; if so - we have a winner!
         for (let i = 0; i < winningCombinations.length; i++) {
           if (containsAll(winningCombinations[i], occupiedCells)) {
             if (player === "O") {
@@ -56,7 +51,6 @@ export function gameReducer(state: GameState, action: Action): GameState {
             }
           }
         }
-        // If all cells are filled, but we have no winner - it is a draw
         if (state.X.length + state.O.length === 9) {
           return {
             ...state,
@@ -69,46 +63,23 @@ export function gameReducer(state: GameState, action: Action): GameState {
       }
       return state;
     case "new_round":
+      const firstTurn = (state.O_score + state.X_score) % 2 == 0 ? "X" : "O"
+      console.log("SCORE:")
+      console.log(state.O_score + state.X_score)
+      console.log(firstTurn)
       return {
         ...initialState,
+        isGameStarted: true,
         O_score: state.O_score,
         X_score: state.X_score,
-        // This line swaps turns between 2 players
-        currentTurn: state.currentTurn,
+        currentTurn: firstTurn,
       };
     case "start_game":
-      if (action.payload === "bot") {
-
-        let gameFirstTurn: "O" | "X";
-        if (state.botPlayingWith === "O") {
-          gameFirstTurn = "X";
-        } else {
-          gameFirstTurn = "O";
-        }
-
-        return {
-          ...initialState,
-          isGameStarted: true,
-          playingWithBot: true,
-          currentTurn: gameFirstTurn,
-        };
-      }
-      else if (action.payload === "player") {
-        return {
-          ...initialState,
-          isGameStarted: true,
-          playingWithBot: false,
-          currentTurn: "X",
-        };
-      }
-      throw new Error ("Invalid action payload in start_game action");
-    case "hide_entry_screen":
-      // Player will always make first turn of the entire game
       return {
         ...initialState,
-        hideEntryScreen: true,
+        isGameStarted: true,
+        currentTurn: "X",
       };
-    default:
-      throw new Error("Didn't find matching action type");
   }
-};
+  return state;
+}

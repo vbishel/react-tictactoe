@@ -11,31 +11,33 @@ export default function MultiplayerCell({ idx }: Props) {
   const context = useContext(MultiContext)!;
   let symbol = "";
   
-  if (context.state.O.indexOf(idx) !== -1) {
+  if (context.state.O.includes(idx)) {
     symbol = "O";
   }
-  if (context.state.X.indexOf(idx) !== -1) {
+  if (context.state.X.includes(idx)) {
     symbol = "X";
   }
 
-  function handleClick() {
-    if (symbol) {
-      return;
-    }
-
+  function isMyTurn() {
     let currentPlayer: "O" | "X";
     const hostSymbol = context.roomInfo!.hostSymbol;
     if (context.roomInfo!.isHost) {
       currentPlayer = hostSymbol;
     } else if (hostSymbol === "O") {
-      currentPlayer = "X"
+      currentPlayer = "X";
     } else {
-      currentPlayer = "O"
+      currentPlayer = "O";
     }
 
-    console.log(context.state.currentTurn)
-    console.log(currentPlayer)
-    if (context.state.currentTurn === currentPlayer) {
+    return context.state.currentTurn === currentPlayer;
+  }
+
+  function handleClick() {
+    if (symbol || context.state.isRoundEnded) {
+      return;
+    }
+
+    if (isMyTurn()) {
       context.dispatch({
         type: "register_turn",
         payload: idx
@@ -45,8 +47,9 @@ export default function MultiplayerCell({ idx }: Props) {
 
   return (
     <div
-    className={`${symbol ? "" : "hover:cursor-pointer"} border-primary border-2 
-    flex justify-center items-center text-5xl`}
+    className={`${symbol || !isMyTurn() || context.state.isRoundEnded ? ""
+    : "hover:cursor-pointer"} ${context.state.isRoundEnded ? "animate-fadePartial" : ""}
+    border-primary border-2 flex justify-center items-center text-5xl`}
     onClick={handleClick}
     >
       <div className={`${symbol ? "animate-scaleIn" : "hidden"}`}>

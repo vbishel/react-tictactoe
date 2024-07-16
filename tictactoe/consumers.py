@@ -15,20 +15,42 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'player_join',
+                'type': 'player_connected',
                 'data': sid,
             }
         )
 
     async def disconnect(self, close_code):
+        sid = await extractSessionIdFromScope(self.scope)
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'player_disconnected',
+                'data': sid,
+            }
+        )
+        print(sid)
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
     
-    async def player_join(self, event):
+    async def player_connected(self, event):
         await self.send(text_data=json.dumps({
-            'type': 'player_join',
+            'type': 'player_connected',
+            'data': event['data']
+        }))
+    
+    async def player_disconnected(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'player_disconnected',
+            'data': event['data']
+        }))
+
+
+    async def host_disconnected(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'host_disconnected',
             'data': event['data']
         }))
     

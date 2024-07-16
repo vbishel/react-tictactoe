@@ -31,11 +31,29 @@ export default {
           "100%": {
             transform: "scale(1)"
           }
+        },
+        fadePartial: {
+          "0%": {
+            opacity: "1"
+          },
+          "100%": {
+            opacity: "0.05"
+          }
+        },
+        fadeIn: {
+          "0%": {
+            opacity: "0"
+          },
+          "100%": {
+            opacity: "1"
+          }
         }
       },
       animation: {
         scaleOut: "scaleOut 0.3s ease forwards",
-        scaleIn: "scaleIn 0.5s ease forwards"
+        scaleIn: "scaleIn 0.25s ease forwards",
+        fadePartial: "fadePartial 0.25s ease forwards",
+        fadeIn: "fadeIn 0.25s ease forwards"
       }
     },
   },

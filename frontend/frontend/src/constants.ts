@@ -20,9 +20,6 @@ export const initialState: GameState = {
   X_score: 0,
   isGameStarted: false,
   isRoundEnded: false,
-  playingWithBot: false,
-  botPlayingWith: "X",
-  hideEntryScreen: false,
   winner: null,
   winningCombination: null,
 };

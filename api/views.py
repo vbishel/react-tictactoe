@@ -64,11 +64,8 @@ class JoinRoomView(APIView):
       data = Room.objects.filter(code = code)
       if len(data) > 0:
         room = data[0]
-        if not room.player:
-          room.player = self.request.session.session_key
-          room.save()
-          return Response({ 'message': 'Room Joined' }, status = status.HTTP_200_OK)
-        
-        return Response({ 'Bad Request': 'Room is full'}, status = status.HTTP_400_BAD_REQUEST)
+        room.player = self.request.session.session_key
+        room.save()
+        return Response({ 'message': 'Room Joined' }, status = status.HTTP_200_OK)
     
     return Response({ 'Bad Request': 'Room Not Found' }, status = status.HTTP_400_BAD_REQUEST)

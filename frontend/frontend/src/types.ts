@@ -14,9 +14,6 @@ export type GameState = {
   X_score: number;
   isGameStarted: boolean;
   isRoundEnded: boolean;
-  playingWithBot: boolean;
-  botPlayingWith: "O"|"X";
-  hideEntryScreen: boolean;
   winner: "O" | "X" | null;
   winningCombination: string[] | null;
 }
