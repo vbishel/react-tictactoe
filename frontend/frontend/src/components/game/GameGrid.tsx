@@ -1,4 +1,5 @@
-import Cell from "./Cell";
+import MultiplayerCell from "./MultiplayerCell";
+import { useContext } from "react";
 
 
 export default function GameGrid() {
@@ -9,7 +10,7 @@ export default function GameGrid() {
     border-2 box-content`}>
       {
         Array.from({length: 9}, (_, index) => {
-          return <Cell key={index} />
+          return <MultiplayerCell idx={(index + 1).toString()} key={index} />
         })
       }
     </div>

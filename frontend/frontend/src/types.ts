@@ -1,3 +1,11 @@
+import { w3cwebsocket } from "websocket";
+
+
+export type Action = {
+  type: string;
+  payload: string;
+};
+
 export type GameState = {
   currentTurn: "O" | "X";
   O: string[];
@@ -6,22 +14,23 @@ export type GameState = {
   X_score: number;
   isGameStarted: boolean;
   isRoundEnded: boolean;
-  hostPlayingWith: "O" | "X";
+  playingWithBot: boolean;
+  botPlayingWith: "O"|"X";
+  hideEntryScreen: boolean;
   winner: "O" | "X" | null;
   winningCombination: string[] | null;
 }
 
-export type GameMultiplayerState = GameState & { isHost: boolean }
+export type RoomInfo = {
+  host: string,
+  isHost: boolean,
+  winsToEnd: number,
+  hostSymbol: "O" | "X",
+}
 
-export const initialState: GameState = {
-  currentTurn: "X",
-  O: [],
-  O_score: 0,
-  X: [],
-  X_score: 0,
-  isGameStarted: false,
-  isRoundEnded: false,
-  hostPlayingWith: "X",
-  winner: null,
-  winningCombination: null,
-};
+export type SingleplayerContext = {
+  state: GameState,
+  dispatch: Function,
+}
+
+export type MultiplayerContext = SingleplayerContext & { roomInfo: RoomInfo }

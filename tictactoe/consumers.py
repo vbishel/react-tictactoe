@@ -16,7 +16,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'player_join',
-                'session_id': sid,
+                'data': sid,
             }
         )
 
@@ -29,16 +29,23 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def player_join(self, event):
         await self.send(text_data=json.dumps({
             'type': 'player_join',
-            'session_id': event['session_id']
+            'data': event['data']
         }))
+    
+
+    async def action(self, event):
+        await self.send(text_data=json.dumps(event))
 
 
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+        data = json.loads(text_data)
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': data['type'],
+                'data': data['data']
+            }
+        )
 
 async def extractSessionIdFromScope(scope):
     stri = str(scope['headers'][10][-1])
