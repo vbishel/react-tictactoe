@@ -1,6 +1,6 @@
-import { Action, GameState, RoomInfo } from "../types";
+import { Action, RoomInfo } from "../types";
 import { initialState } from "../constants";
-import { Location, useLocation, Link } from "react-router-dom";
+import { Location, useLocation, useNavigate, Link } from "react-router-dom";
 import RoundEndMenu from "../components/room/RoundEndMenu";
 import PageContainer from "../components/PageContainer";
 import { useEffect, useState, useReducer } from "react";
@@ -9,7 +9,6 @@ import { gameReducer } from "../reducers/gameReducer";
 import ButtonPrimary from "../components/buttons/ButtonPrimary";
 import { w3cwebsocket } from "websocket";
 import GameGrid from "../components/game/GameGrid";
-import ButtonPrimaryLink from "../components/buttons/ButtonPrimaryLink";
 import RoomError from "../components/room/RoomError";
 
 
@@ -46,12 +45,7 @@ export default function RoomPage() {
   }, [])
 
   useEffect(() => {
-    // TODO: при отключении хоста выходить из комнаты
-    if (roomInfo) {
-      if (!socket && player) {
-        setRoomFull(true);
-        return;
-      }
+    if (roomInfo && !roomFull) {
       socket = new w3cwebsocket(`ws://127.0.0.1:8000/room/${roomCode}`)
       socket.onopen = () => {
         console.log("client connected");
@@ -86,6 +80,16 @@ export default function RoomPage() {
             }
             break;
 
+          case "host_disconnected":
+            setHostDisconnected(true);
+            const requestOptions = {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+            }
+            fetch(`/api/delete-room/${roomCode}`, requestOptions)
+            .then(response => console.log(response))
+            break;
+          
           case "accept_action":
           default:
             const action = dataFromServer.data as Action;
