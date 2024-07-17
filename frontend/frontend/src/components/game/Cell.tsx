@@ -43,6 +43,12 @@ export default function Cell({ idx }: Props) {
         payload: idx
       })
     }
+    if (context.singleplayer) {
+      context.dispatch({ 
+        type: "check_round_winner", 
+        payload: "" 
+      });
+    }
   }
 
   return (

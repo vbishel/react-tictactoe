@@ -1,4 +1,3 @@
-import { w3cwebsocket } from "websocket";
 
 
 export type Action = {
@@ -25,17 +24,19 @@ export type RoomInfo = {
   winsToEnd: number,
 }
 
-
 export type RoomSettings = {
   winsToEnd: string,
   hostSymbol: "O" | "X",
   inputError: string,
-  roomCode: string,
 }
 
+export type MultiplayerRoomSettings = RoomSettings & { 
+  roomCode: string 
+}
 
 export type GameContext = {
   state: GameState,
   dispatch: Function,
-  roomInfo: RoomInfo
+  roomInfo: RoomInfo,
+  singleplayer: boolean,
 }

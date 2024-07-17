@@ -150,7 +150,10 @@ export default function RoomPage() {
 
   if (state.isGameStarted && player && !playerDisconnected) {
     return (
-      <TictactoeContext.Provider value={{state, dispatch: sendAction, roomInfo}}>
+      <TictactoeContext.Provider value={{
+        state, dispatch: sendAction, roomInfo, 
+        singleplayer: false
+      }}>
         { state.isRoundEnded ? <RoundEndMenu /> : null}
         <GameGrid />
       </TictactoeContext.Provider>

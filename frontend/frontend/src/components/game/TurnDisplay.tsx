@@ -16,7 +16,6 @@ export default function TurnDisplay({ displayFor }: Props) {
     if (context.state.isRoundEnded 
     || context.state.currentTurn === oppositePlayer(displayFor)) {
       if (oneTurnWasMade(context.state)) {
-        console.log("animate-scaleOutY")
         return "animate-scaleOutY";
       }
       return "opacity-0";

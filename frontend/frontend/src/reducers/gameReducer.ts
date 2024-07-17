@@ -60,6 +60,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
           winner: null,
         }
       }
+      console.log("ROUND NOT ENDED")
       return state;
 
     case "new_round":

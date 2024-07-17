@@ -1,14 +1,14 @@
-import ButtonSecondary from '../components/buttons/ButtonSecondary';
 import ButtonPrimary from '../components/buttons/ButtonPrimary';
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import PageContainer from '../components/PageContainer';
-import ControlledInput from '../components/inputs/ControlledInput';
-import { RoomSettings } from '../types';
+import { MultiplayerRoomSettings } from '../types';
+import ChooseSymbol from '../components/inputs/ChooseSymbol';
+import ChooseWinsToEnd from '../components/inputs/ChooseWinsToEnd';
 
 
 export default function CreateRoomPage() {
-  const [roomSettings, setRoomSettings] = useState<RoomSettings>({
+  const [roomSettings, setRoomSettings] = useState<MultiplayerRoomSettings>({
     winsToEnd: "5",
     hostSymbol: "O",
     inputError: "",
@@ -50,37 +50,25 @@ export default function CreateRoomPage() {
 
   return (
     <PageContainer>
-      <div>wins to end game</div>
-      <div>max - 99</div>
-      <ControlledInput
-      type="number" 
-      value={roomSettings.winsToEnd}
-      inputError={roomSettings.inputError}
-      onChange={(e) => setRoomSettings({...roomSettings, winsToEnd: e.target.value, inputError: ""})}
-      maxLength={2}
+      <ChooseWinsToEnd 
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        setRoomSettings({...roomSettings, winsToEnd: e.target.value})
+      }}
+      roomSettings={roomSettings}
       />
-      <div className="mt-4">host symbol</div>
-      <div className="w-[140px] mt-4 flex flex-row justify-between">
-        <ButtonSecondary
-        className={`${roomSettings.hostSymbol === "X" ? "" : "opacity-30"}`}
-        onClick={() => setRoomSettings({...roomSettings, hostSymbol: "X"})}
-        >
-          X
-        </ButtonSecondary>
-        <ButtonSecondary
-        className={`${roomSettings.hostSymbol === "O" ? "" : "opacity-30"}`}
-        onClick={() => setRoomSettings({...roomSettings, hostSymbol: "O"})}
-        >
-          O
-        </ButtonSecondary>
-      </div>
+      <ChooseSymbol 
+      currentSymbol={roomSettings.hostSymbol}
+      onChange={
+        (symbol: "O" | "X") => setRoomSettings({...roomSettings, hostSymbol: symbol, inputError: ""})
+      }
+      />
       <ButtonPrimary
       className="mt-8 !w-[140px] h-[40px]"
       onClick={createRoom}
       >
         CREATE
       </ButtonPrimary>
-      <Link to="/" className="mt-2 hover:cursor-pointer">
+      <Link to="/" className="mt-4 hover:cursor-pointer">
         BACK
       </Link>
     </PageContainer>
