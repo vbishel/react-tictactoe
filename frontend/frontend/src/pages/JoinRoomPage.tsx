@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export default function JoinRoomPage() {
   const [roomCode, setRoomCode] = useState("");
-  const [roomJoined, setRoomJoined] = useState(false);
+  const [inputError, setInputError] = useState("");
   const navigate = useNavigate();
 
   function handleRoomJoin() {
@@ -17,20 +17,14 @@ export default function JoinRoomPage() {
     }
     fetch(`/api/join-room?code=${roomCode}`, requestOptions)
     .then((response) => {
-      if (response.ok) {
-        setRoomJoined(true);
+      if (!response.ok) {
+        setInputError(response.statusText);
+        return;
       }
-
-      return response.json()
-    })
-    .then((data) => {
-      console.log(data);
+      navigate(`/room/${roomCode}`);
     })
   }
 
-  if (roomJoined) {
-    navigate(`/room/${roomCode}`);
-  }
 
   return (
     <PageContainer>
@@ -43,6 +37,7 @@ export default function JoinRoomPage() {
         setRoomCode(e.target.value.toUpperCase())
       }}
       maxLength={6}
+      inputError={inputError}
       />
       <ButtonPrimary
       className="mt-6 w-[80px] h-[10px]"

@@ -80,6 +80,8 @@ export function gameReducer(state: GameState, action: Action): GameState {
         isGameStarted: true,
         currentTurn: "X",
       };
+    case "force_reset":
+      return initialState;
   }
   return state;
 }

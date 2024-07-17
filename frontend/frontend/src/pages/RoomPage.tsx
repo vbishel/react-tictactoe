@@ -3,6 +3,7 @@ import { initialState } from "../constants";
 import { Location, useLocation, Link } from "react-router-dom";
 import RoundEndMenu from "../components/room/RoundEndMenu";
 import PageContainer from "../components/PageContainer";
+import PlayerStatus from "../components/room/PlayerStatus";
 import { useEffect, useState, useReducer } from "react";
 import { TictactoeContext } from "../contexts";
 import { gameReducer } from "../reducers/gameReducer";
@@ -10,7 +11,6 @@ import ButtonPrimary from "../components/buttons/ButtonPrimary";
 import { w3cwebsocket } from "websocket";
 import GameGrid from "../components/game/GameGrid";
 import RoomError from "../components/room/RoomError";
-
 
 var socket: w3cwebsocket;
 var prevAction: Action;
@@ -22,6 +22,8 @@ export default function RoomPage() {
   const [roomFound, setRoomFound] = useState<boolean | undefined>(undefined);
   const [player, setPlayer] = useState("");
   const [hostDisconnected, setHostDisconnected] = useState(false);
+  const [playerDisconnected, setPlayerDisconnected] = useState(false);
+
 
   useEffect(() => {
     fetch(`/api/get-room?code=${roomCode}`)
@@ -41,6 +43,7 @@ export default function RoomPage() {
         hostSymbol: data.host_symbol,
       });
     })
+    
   }, [])
 
   useEffect(() => {
@@ -59,6 +62,7 @@ export default function RoomPage() {
 
             if (session_id !== roomInfo.host) {
               setPlayer(session_id);
+              setPlayerDisconnected(false);
             }
             break;
           
@@ -72,6 +76,11 @@ export default function RoomPage() {
             } else {
               setPlayer("");
             }
+            sendAction({
+              type: "force_reset",
+              payload: ""
+            })
+            setPlayerDisconnected(true);
             break;
 
           case "host_disconnected":
@@ -138,9 +147,8 @@ export default function RoomPage() {
     return null;
   }
 
-  console.log(state)
 
-  if (state.isGameStarted) {
+  if (state.isGameStarted && player && !playerDisconnected) {
     return (
       <TictactoeContext.Provider value={{state, dispatch: sendAction, roomInfo}}>
         { state.isRoundEnded ? <RoundEndMenu /> : null}
@@ -148,6 +156,7 @@ export default function RoomPage() {
       </TictactoeContext.Provider>
     )
   }
+
   return (
     <PageContainer className={`${state.isGameStarted ? "hidden" : ""}`}>
       <div className="text-xl">
@@ -159,12 +168,10 @@ export default function RoomPage() {
       <div>
         host symbol: <span className="text-primary-light">{roomInfo.hostSymbol}</span>
       </div>
-      <div>
-        player: {" "}
-        <span className={`${player ? "text-primary-light" : "text-primary-dark"}`}>
-          {player ? "connected" : "not connected"}
-        </span>
-      </div>
+      <PlayerStatus 
+      playerDisconnected={playerDisconnected} 
+      player={player}
+      />
       <ButtonPrimary 
       className="mt-4 w-[200px] py-1" disabled={!(roomInfo.isHost && player)}
       onClick={handleGameStart}

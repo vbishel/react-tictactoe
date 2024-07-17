@@ -20,10 +20,19 @@ export type GameState = {
 
 export type RoomInfo = {
   host: string,
+  hostSymbol: "O" | "X",
   isHost: boolean,
   winsToEnd: number,
-  hostSymbol: "O" | "X",
 }
+
+
+export type RoomSettings = {
+  winsToEnd: string,
+  hostSymbol: "O" | "X",
+  inputError: string,
+  roomCode: string,
+}
+
 
 export type GameContext = {
   state: GameState,

@@ -40,6 +40,9 @@ class GetRoomView(APIView):
   lookup_url_kwarg = 'code'
 
   def get(self, request):
+    if not self.request.session.exists(self.request.session.session_key):
+      self.request.session.create();
+
     code = request.GET.get(self.lookup_url_kwarg)
     if code == None:
       return room_not_found()

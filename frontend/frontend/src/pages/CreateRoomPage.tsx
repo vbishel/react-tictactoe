@@ -4,16 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import PageContainer from '../components/PageContainer';
 import ControlledInput from '../components/inputs/ControlledInput';
+import { RoomSettings } from '../types';
 
-type State = {
-  winsToEnd: string,
-  hostSymbol: "O" | "X",
-  inputError: string,
-  roomCode: string,
-}
 
 export default function CreateRoomPage() {
-  const [state, setState] = useState<State>({
+  const [roomSettings, setRoomSettings] = useState<RoomSettings>({
     winsToEnd: "5",
     hostSymbol: "O",
     inputError: "",
@@ -22,9 +17,9 @@ export default function CreateRoomPage() {
   const navigate = useNavigate();
 
   function createRoom() {
-    const winsToEnd = parseInt(state.winsToEnd);
+    const winsToEnd = parseInt(roomSettings.winsToEnd);
     if (isNaN(winsToEnd) || winsToEnd < 1 || winsToEnd > 100) {
-      setState({...state, inputError: "incorrect input"})
+      setRoomSettings({...roomSettings, inputError: "incorrect input"})
       return;
     }
 
@@ -33,18 +28,24 @@ export default function CreateRoomPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         wins_to_end: winsToEnd,
-        host_symbol: state.hostSymbol
+        host_symbol: roomSettings.hostSymbol
       })
     }
     fetch("/api/create-room", requestOptions)
     .then((response) => {
       if (!response.ok) {
-        // TODO
+        setRoomSettings({...roomSettings, inputError: response.statusText})
+        return null;
       }
 
       return response.json()
     })
-    .then(data => navigate(`/room/${data.code}`));
+    .then((data) => {
+      if (!data) {
+        return;
+      }
+      navigate(`/room/${data.code}`)
+    });
   }
 
   return (
@@ -53,22 +54,22 @@ export default function CreateRoomPage() {
       <div>max - 99</div>
       <ControlledInput
       type="number" 
-      value={state.winsToEnd}
-      inputError={state.inputError}
-      onChange={(e) => setState({...state, winsToEnd: e.target.value, inputError: ""})}
+      value={roomSettings.winsToEnd}
+      inputError={roomSettings.inputError}
+      onChange={(e) => setRoomSettings({...roomSettings, winsToEnd: e.target.value, inputError: ""})}
       maxLength={2}
       />
       <div className="mt-4">host symbol</div>
       <div className="w-[140px] mt-4 flex flex-row justify-between">
         <ButtonSecondary
-        className={`${state.hostSymbol === "X" ? "" : "opacity-30"}`}
-        onClick={() => setState({...state, hostSymbol: "X"})}
+        className={`${roomSettings.hostSymbol === "X" ? "" : "opacity-30"}`}
+        onClick={() => setRoomSettings({...roomSettings, hostSymbol: "X"})}
         >
           X
         </ButtonSecondary>
         <ButtonSecondary
-        className={`${state.hostSymbol === "O" ? "" : "opacity-30"}`}
-        onClick={() => setState({...state, hostSymbol: "O"})}
+        className={`${roomSettings.hostSymbol === "O" ? "" : "opacity-30"}`}
+        onClick={() => setRoomSettings({...roomSettings, hostSymbol: "O"})}
         >
           O
         </ButtonSecondary>
